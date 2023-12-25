@@ -37,8 +37,8 @@ class Entity:
             angle = 360 / self.edges
             points = []
             for i in range(self.edges):
-                x = self.size * math.cos(math.radians(angle * i))
-                y = self.size * math.sin(math.radians(angle * i))
+                x = (self.size - self.size/self.edges) * math.cos(math.radians(angle * i))
+                y = (self.size - self.size/self.edges) * math.sin(math.radians(angle * i))
                 points.append((x, y))
 
             rotated_points = [(int(x * math.cos(math.radians(self.rotation)) - y * math.sin(

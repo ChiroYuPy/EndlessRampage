@@ -6,7 +6,7 @@ from ..game.entity import TangibleEntity
 class XpObject(TangibleEntity):
     def __init__(self, pos, color, size, shape="polygon", edges=3):
         super().__init__(pos=pos, size=size, color=color, shape=shape, width=4, border=8, speed=1, inertia=0.95)
-        self.max_hp = 4*1.4**(edges-3)
+        self.max_hp = 10*1.8**(edges-3)
         self.xp_value = 2 ** (edges + 2)
 
         self.hp = self.max_hp

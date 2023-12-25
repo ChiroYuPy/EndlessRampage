@@ -46,7 +46,7 @@ class Collision:
                     xp_object.move(xp_object.velocity.x, xp_object.velocity.y)
                     projectile_velocity = projectile.direction * projectile.speed
                     xp_object.velocity = Vector2(projectile_velocity.x, projectile_velocity.y)
-                    xp_object.hp -= 1
+                    xp_object.hp -= self.game.player.projectile_damage
                     projectile.alive = False
                     if xp_object.hp <= 0:
                         self.game.settings.update_xp(xp_object.xp_value)

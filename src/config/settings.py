@@ -11,7 +11,7 @@ class Settings:
         self.screen_width = 1280
         self.screen_height = 720
 
-        self.skill_points = 0
+        self.skill_points = 10
         self.level = 0
         self.xp = 0
         self.max_xp = 100

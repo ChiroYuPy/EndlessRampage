@@ -27,6 +27,10 @@ class Spawner:
             self.last_spawn_time = current_time
 
 
+xp_object_options = [3, 4, 5, 6, 7, 8]
+xp_object_weights = [0.35, 0.25, 0.18, 0.12, 0.07, 0.03]
+
+
 class Generator:
     def __init__(self):
         self.edges = None
@@ -39,26 +43,28 @@ class Generator:
             current_time = tick
             if current_time - self.last_spawn_time >= 1000 / OBJECT_SPAWN_RATE:
 
-                # Randomly determine the number of edges for the object and set color and size accordingly.
-                # Then, create an XpObject and add it to the data list.
-                # The object is a polygon with a random number of edges (3 to 6).
-
-                self.edges = random.randint(3, 6)
+                self.edges = random.choices(xp_object_options, xp_object_weights)[0]
                 if self.edges == 3:
                     self.color = (255, 0, 0)
-                    self.size = 20
+                    self.size = 32
                 elif self.edges == 4:
                     self.color = (255, 255, 0)
-                    self.size = 24
+                    self.size = 36
                 elif self.edges == 5:
                     self.color = (0, 0, 255)
-                    self.size = 28
+                    self.size = 40
                 elif self.edges == 6:
                     self.color = (0, 255, 0)
-                    self.size = 32
+                    self.size = 44
+                elif self.edges == 7:
+                    self.color = "#640094"
+                    self.size = 48
+                elif self.edges == 8:
+                    self.color = "#90065c"
+                    self.size = 52
                 else:
                     self.color = (255, 255, 255)
-                    self.size = 20
+                    self.size = 12
 
                 pos = Vector2(random.randint(0, MAP_W), random.randint(0, MAP_H))
                 object = XpObject(pos, self.color, self.size, shape="polygon", edges=self.edges)

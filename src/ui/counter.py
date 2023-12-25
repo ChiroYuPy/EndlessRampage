@@ -66,9 +66,9 @@ class Counter:
                 self.clicked = True
             elif not mouse_button and self.clicked:
                 self.clicked = False
-                if self.command and self.value < self.max_value and self.game.xp_bar.skill_points > 0:
+                if self.command and self.value < self.max_value and self.game.settings.skill_points > 0:
                     self.value += 1
-                    self.game.xp_bar.skill_points -= 1
+                    self.game.settings.skill_points -= 1
                     self.command()
         else:
             self.clicked = False

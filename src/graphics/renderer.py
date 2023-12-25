@@ -17,7 +17,8 @@ class Renderer:
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height), pygame.NOFRAME, pygame.SRCALPHA)
         pygame.display.set_caption(CAPTION)
         pygame.mouse.set_visible(False)
-        self.font = pygame.font.Font("src/assets/fonts/Bubble.ttf", 20)
+        self.font12 = pygame.font.Font("src/assets/fonts/Bubble.ttf", 12)
+        self.font24 = pygame.font.Font("src/assets/fonts/Bubble.ttf", 24)
 
         self.cursor = Cursor(self)
 
@@ -66,18 +67,40 @@ class Renderer:
             enemy.draw(self.map)
             self.total_entities_drawn += 1
 
+            if self.game.debug_mode:
+                enemy_rect = pygame.Rect(enemy.pos.x - enemy.size / 2, enemy.pos.y - enemy.size / 2, enemy.size, enemy.size)
+                pygame.draw.rect(self.map, (255, 255, 255), enemy_rect, 1)
+
         for projectile in self.game.projectiles:
             projectile.draw(self.map)
             self.total_entities_drawn += 1
+
+            if self.game.debug_mode:
+                projectile_rect = pygame.Rect(projectile.pos.x - projectile.size / 2, projectile.pos.y - projectile.size / 2, projectile.size, projectile.size)
+                pygame.draw.rect(self.map, (255, 255, 255), projectile_rect, 1)
 
         for xp_object in self.game.xp_objects:
             xp_object.draw(self.map)
             self.total_entities_drawn += 1
 
+            if self.game.debug_mode:
+                xp_object_rect = pygame.Rect(xp_object.pos.x - xp_object.size / 2, xp_object.pos.y - xp_object.size / 2, xp_object.size, xp_object.size)
+                pygame.draw.rect(self.map, (255, 255, 255), xp_object_rect, 1)
+
         self.total_entities_drawn += 2
 
         self.game.core.draw(self.map)
         self.game.player.draw(self.map)
+
+        if self.game.debug_mode:
+            player_rect = pygame.Rect(self.game.player.pos.x - self.game.player.size / 2,
+                                         self.game.player.pos.y - self.game.player.size / 2,
+                                         self.game.player.size, self.game.player.size)
+            core_rect = pygame.Rect(self.game.core.pos.x - self.game.core.size / 2,
+                                         self.game.core.pos.y - self.game.core.size / 2,
+                                         self.game.core.size, self.game.core.size)
+            pygame.draw.rect(self.map, (255, 255, 255), player_rect, 1)
+            pygame.draw.rect(self.map, (255, 255, 255), core_rect, 1)
 
         self.screen.blit(self.map, (-self.game.player.pos.x + self.screen_width / 2, -self.game.player.pos.y + self.screen_height / 2))
 
@@ -86,15 +109,26 @@ class Renderer:
         for obj in self.game.game_uis:
             obj.draw(self.screen)
 
-        if self.game.xp_bar.skill_points != 0:
-            text = self.font.render(f"x{self.game.xp_bar.skill_points}", True, (255, 255, 255))
+        text1 = self.font24.render('Lvl.', True, '#9ee523')
+        text2 = self.font24.render(str(self.game.settings.level), True, '#4dc514')
+
+        center_x = self.screen_width / 2 - text1.get_width() + text2.get_width() - 4
+
+        text1_pos = (center_x, self.screen_height - 64)
+        text2_pos = (center_x + text1.get_width(), self.screen_height - 64)
+
+        self.screen.blit(text1, text1_pos)
+        self.screen.blit(text2, text2_pos)
+
+        if self.game.settings.skill_points != 0:
+            text = self.font24.render(f"x{self.game.settings.skill_points}", True, (255, 255, 255))
             rotated_text = pygame.transform.rotate(text, 20)
-            self.screen.blit(rotated_text, (self.screen_width*0.205, self.screen_height*0.65))
+            self.screen.blit(rotated_text, (self.screen_width*0.205, self.screen_height*0.605))
 
         if self.game.debug_mode:
             for i, stat_text in enumerate(self.update_stats()):
-                stat_display = self.font.render(stat_text, True, (199, 199, 199))
-                self.screen.blit(stat_display, (5, 5 + i * 20))
+                stat_display = self.font12.render(stat_text, True, (199, 199, 199))
+                self.screen.blit(stat_display, (4, 1 + i * 12))
 
         if not self.game.debug_mode and not self.game.pause_menu_active and pygame.mouse.get_focused():
             self.cursor.draw(self.screen)
@@ -112,18 +146,14 @@ class Renderer:
 
     def update_stats(self):
         return [
-            f'Game version: {GAME_VERSION}',
-            f'Mouse Window Pos: {pygame.mouse.get_pos()}',
-            f'Mouse Map Pos: {self.get_map_pos(Vector2(*pygame.mouse.get_pos()))}',
-            f'Player Pos: {(int(self.game.player.pos.x), int(self.game.player.pos.y))}',
-            f'Player HP: {self.game.player.hp}',
-            f'Player Velocity: {round(self.game.player.velocity)*self.game.player.speed_boost}',
-            f'FPS: {int(self.game.clock.get_fps())}/{FPS}',
-            f'Game Enemies: {len(self.game.enemies)}',
-            f'Game Projectiles: {len(self.game.projectiles)}',
-            f'Game XpObjects: {len(self.game.xp_objects)}',
-            f'Game Objects: {self.total_entities_drawn}',
-            f'Game Uis: {len(self.game.game_uis)}',
-            f'Game UpTime: {int(pygame.time.get_ticks() / 1000)}s',
-            f'Images Draws: {int(pygame.time.get_ticks() / 1000 * FPS)}',
+            f'{GAME_VERSION} | {int(self.game.clock.get_fps())}/{FPS} | {int(pygame.time.get_ticks() / 1000)}s | {int(pygame.time.get_ticks() / 1000 * FPS)} img',
+            f'MWPos: {pygame.mouse.get_pos()}',
+            f'MMPos: {self.get_map_pos(Vector2(*pygame.mouse.get_pos()))}',
+            f'PPos: {(int(self.game.player.pos.x), int(self.game.player.pos.y))}',
+            f'PVel: {round(self.game.player.velocity)*self.game.player.speed_boost}',
+            f'Enemies: {len(self.game.enemies)}',
+            f'Projectiles: {len(self.game.projectiles)}',
+            f'XpObjects: {len(self.game.xp_objects)}',
+            f'Objects: {self.total_entities_drawn}',
+            f'Uis: {len(self.game.game_uis)}'
         ]

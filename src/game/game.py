@@ -8,7 +8,6 @@ from ..ui.MiniMap import MiniMap
 from ..config.constants import *
 from ..game.spawner import *
 from ..config.settings import Settings
-from ..game.XpBar import XpBar
 from ..ui.gauge import Gauge
 from ..ui.counter import Counter
 from ..game.CollisionHandler import Collision
@@ -60,35 +59,49 @@ class Game:
                                     font_size=48,
                                     offset_y=-2))
 
+        self.player_xp_bar = Gauge((self.window_width / 2, self.window_height - 20), (360, 30),
+                                   max_value=self.settings.max_xp,
+                                   border_color=(50, 50, 50),
+                                   gauge_color="#15cac5",
+                                   back_gauge_color="#7accc9",
+                                   border=8,
+                                   width=4,
+                                   text=True,
+                                   text_color="#aee1df")
+        self.game_uis.append(self.player_xp_bar)
+
         self.core_hp_bar = Gauge((self.window_width - 110, self.window_height / 2 + 46), (216, 30),
                                  max_value=self.core.max_hp,
                                  border_color=(50, 50, 50),
                                  gauge_color="#d6702e",
+                                 back_gauge_color="#d29e7c",
                                  border=8,
                                  width=4,
                                  text=True,
                                  text_color="#eabfa2")
         self.game_uis.append(self.core_hp_bar)
 
-        self.player_stamina_bar = Gauge((self.window_width - 110, self.window_height / 2 + 83), (216, 30),
-                                        max_value=self.player.max_stamina,
-                                        border_color=(50, 50, 50),
-                                        gauge_color=(88, 23, 246),
-                                        border=8,
-                                        width=4,
-                                        text=True,
-                                        text_color="#a498e8")
-        self.game_uis.append(self.player_stamina_bar)
-
-        self.player_hp_bar = Gauge((self.window_width - 110, self.window_height / 2 + 120), (216, 30),
+        self.player_hp_bar = Gauge((self.window_width - 110, self.window_height / 2 + 83), (216, 30),
                                    max_value=self.player.max_hp,
                                    border_color=(50, 50, 50),
                                    gauge_color="#9d1717",
+                                   back_gauge_color="#ca6868",
                                    border=8,
                                    width=4,
                                    text=True,
                                    text_color="#ea9696")
         self.game_uis.append(self.player_hp_bar)
+
+        self.player_stamina_bar = Gauge((self.window_width - 110, self.window_height / 2 + 120), (216, 30),
+                                        max_value=self.player.max_stamina,
+                                        border_color=(50, 50, 50),
+                                        gauge_color=(88, 23, 246),
+                                        back_gauge_color="#7d70ca",
+                                        border=8,
+                                        width=4,
+                                        text=True,
+                                        text_color="#a498e8")
+        self.game_uis.append(self.player_stamina_bar)
 
         y_spacing = 32
 
@@ -112,6 +125,11 @@ class Game:
                 "name": "Core max hp",
                 "level": 0,
                 "color": "#6c96f0"
+            },
+            "player_body_damage_level": {
+                "name": "Player body damage",
+                "level": 0,
+                "color": "#6cf0ec"
             },
             "player_projectile_speed_level": {
                 "name": "Player projectile speed",
@@ -159,9 +177,6 @@ class Game:
                                           text="Restart",
                                           font_size=24))
 
-        self.xp_bar = XpBar((self.window_width / 2, self.window_height * 0.05))
-        self.game_uis.append(self.xp_bar)
-
         self.mini_map = MiniMap((self.window_width - 110, self.window_height - 110), (200, 200), self)
         self.game_uis.append(self.mini_map)
 
@@ -205,7 +220,7 @@ class Game:
                     pygame.mouse.set_visible(self.pause_menu_active)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a] or keys[pygame.K_e]:
-            self.player.fire(self.projectiles, self.get_pos_on_map(pygame.mouse.get_pos()))
+            self.player.fire(self.projectiles)
         if keys[pygame.K_LSHIFT]:
             self.player.speed_boost = True
         else:
@@ -246,8 +261,9 @@ class Game:
         self.player_hp_bar.value = self.player.hp
         self.player_stamina_bar.value = self.player.stamina
         self.core_hp_bar.value = self.core.hp
+        self.player_xp_bar.value = self.settings.xp
 
-        self.player.update()
+        self.player.update(self.get_pos_on_map(pygame.mouse.get_pos()))
         self.core.update()
 
         self.collision.handler()
@@ -263,7 +279,6 @@ class Game:
         for xp_object in self.xp_objects:
             if not xp_object.alive:
                 self.xp_objects.remove(xp_object)
-
 
     def stop(self):
         self.is_running = False

@@ -2,6 +2,7 @@ import pygame
 
 from ..game.entity import TangibleEntity
 
+
 class Enemy(TangibleEntity):
     def __init__(self, pos, enemy_id):
         enemy_params = get_enemy_params_by_id(enemy_id)
@@ -22,13 +23,7 @@ class Enemy(TangibleEntity):
 
     def draw(self, screen):
         super().draw(screen)
-        # self.render_name(screen)
 
-    def render_name(self, screen):
-        font = pygame.font.Font(None, 12)
-        text = font.render(self.type, True, (255, 255, 255))
-        text_rect = text.get_rect(center=(self.pos.x, self.pos.y-self.size-10))
-        screen.blit(text, text_rect)
 
 def get_enemy_params_by_id(enemy_id):
     types = [

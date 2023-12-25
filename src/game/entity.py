@@ -25,18 +25,14 @@ class Entity:
 
     def draw(self, screen):
         if self.shape == "circle":
-            rotated_surface = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
-            pygame.draw.circle(rotated_surface, self.color, (self.size // 2, self.size // 2), radius=self.size // 2,
-                               width=self.width)
-            rotated_surface = pygame.transform.rotate(rotated_surface, self.rotation)
-            screen.blit(rotated_surface, (self.pos.x - self.size // 2, self.pos.y - self.size // 2))
+            pygame.draw.circle(screen, self.color, (int(self.pos.x), int(self.pos.y)), radius=int(self.size // 2),
+                               width=int(self.width))
+
         elif self.shape == "rectangle":
-            rotated_surface = pygame.Surface((self.size, self.size), pygame.SRCALPHA)
-            rotated_rectangle = pygame.draw.rect(rotated_surface, self.color, (0, 0, self.size, self.size),
-                                                 width=self.width, border_radius=self.border)
-            rotated_surface = pygame.transform.rotate(rotated_surface, self.rotation)
-            screen.blit(rotated_surface,
-                        (self.pos.x - rotated_rectangle.width // 2, self.pos.y - rotated_rectangle.height // 2))
+            rect = pygame.Rect(0, 0, self.size, self.size)
+            rect.center = (int(self.pos.x), int(self.pos.y))
+            pygame.draw.rect(screen, self.color, rect, width=int(self.width), border_radius=int(self.border))
+
         elif self.shape == "polygon":
             angle = 360 / self.edges
             points = []
@@ -76,10 +72,6 @@ class TangibleEntity(Entity):
         self.inertia = inertia
 
         self.is_already_collide = False
-
-    def update(self):
-        super().update()
-        self.rotation += math.degrees(0.01)
 
     def move(self, dx, dy):
         self.velocity *= self.inertia

@@ -57,20 +57,20 @@ class Settings:
                 case "Player max stamina":
                     if self.game.player_stamina_level < self.MAX_SKILL_LEVEL:
                         self.game.player_stamina_level += 1
-                    self.game.player.max_stamina = self.round_skill(PLAYER_MAX_STAMINA, 1.175, self.game.player_stamina_level)
-                    self.game.player_stamina_bar.max_value = self.round_skill(PLAYER_MAX_STAMINA, 1.175, self.game.player_stamina_level)
+                    self.game.player.max_stamina = self.round_skill(PLAYER_MAX_STAMINA, 1.196, self.game.player_stamina_level)
+                    self.game.player_stamina_bar.max_value = self.round_skill(PLAYER_MAX_STAMINA, 1.196, self.game.player_stamina_level)
 
                 case "Player max hp":
                     if self.game.player_max_hp_level < self.MAX_SKILL_LEVEL:
                         self.game.player_max_hp_level += 1
-                    self.game.player.max_hp = self.round_skill(PLAYER_MAX_HP, 1.175, self.game.player_max_hp_level)
-                    self.game.player_hp_bar.max_value = self.round_skill(PLAYER_MAX_HP, 1.175, self.game.player_max_hp_level)
+                    self.game.player.max_hp = self.round_skill(PLAYER_MAX_HP, 1.196, self.game.player_max_hp_level)
+                    self.game.player_hp_bar.max_value = self.round_skill(PLAYER_MAX_HP, 1.196, self.game.player_max_hp_level)
 
                 case "Core max hp":
                     if self.game.core_max_hp_level < self.MAX_SKILL_LEVEL:
                         self.game.core_max_hp_level += 1
-                    self.game.core.max_hp = self.round_skill(CORE_MAX_HP, 1.1, self.game.core_max_hp_level)
-                    self.game.core_hp_bar.max_value = self.round_skill(CORE_MAX_HP, 1.175, self.game.core_max_hp_level)
+                    self.game.core.max_hp = self.round_skill(CORE_MAX_HP, 1.196, self.game.core_max_hp_level)
+                    self.game.core_hp_bar.max_value = self.round_skill(CORE_MAX_HP, 1.196, self.game.core_max_hp_level)
 
                 case "Player body damage":
                     if self.game.player_body_damage_level < self.MAX_SKILL_LEVEL:
@@ -80,7 +80,7 @@ class Settings:
                 case "Player projectile speed":
                     if self.game.player_projectile_speed_level < self.MAX_SKILL_LEVEL:
                         self.game.player_projectile_speed_level += 1
-                    self.game.player.projectile_speed = self.round_skill(PLAYER_PROJECTILE_SPEED, 1.1, self.game.player_projectile_speed_level)
+                    self.game.player.projectile_speed = self.round_skill(PLAYER_PROJECTILE_SPEED, 1.05, self.game.player_projectile_speed_level)
 
                 case "Player projectile reload":
                     if self.game.player_projectile_reload_level < self.MAX_SKILL_LEVEL:

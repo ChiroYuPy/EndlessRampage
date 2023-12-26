@@ -21,6 +21,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.window_width = WINDOW_SIZE[0]
         self.window_height = WINDOW_SIZE[1]
+
         self.renderer = Renderer(self)
         self.collision = Collision(self)
 
@@ -67,7 +68,9 @@ class Game:
                                    border=8,
                                    width=4,
                                    text=True,
-                                   text_color="#aee1df")
+                                   text_color="#aee1df",
+                                   adapt_value_speed=0.5,
+                                   default_value=0)
         self.game_uis.append(self.player_xp_bar)
 
         self.core_hp_bar = Gauge((self.window_width - 110, self.window_height / 2 + 46), (216, 30),
@@ -78,7 +81,9 @@ class Game:
                                  border=8,
                                  width=4,
                                  text=True,
-                                 text_color="#eabfa2")
+                                 text_color="#eabfa2",
+                                 adapt_value_speed=0.3,
+                                 default_value=self.core.max_hp)
         self.game_uis.append(self.core_hp_bar)
 
         self.player_hp_bar = Gauge((self.window_width - 110, self.window_height / 2 + 83), (216, 30),
@@ -89,7 +94,9 @@ class Game:
                                    border=8,
                                    width=4,
                                    text=True,
-                                   text_color="#ea9696")
+                                   text_color="#ea9696",
+                                   adapt_value_speed=0.3,
+                                   default_value=self.player.max_hp)
         self.game_uis.append(self.player_hp_bar)
 
         self.player_stamina_bar = Gauge((self.window_width - 110, self.window_height / 2 + 120), (216, 30),
@@ -100,7 +107,9 @@ class Game:
                                         border=8,
                                         width=4,
                                         text=True,
-                                        text_color="#a498e8")
+                                        text_color="#a498e8",
+                                        adapt_value_speed=0.3,
+                                        default_value=self.player.max_stamina)
         self.game_uis.append(self.player_stamina_bar)
 
         y_spacing = 32

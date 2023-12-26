@@ -64,10 +64,12 @@ class Entity:
 
 
 class TangibleEntity(Entity):
-    def __init__(self, pos, size, color, shape="rectangle", width=4, border=8, speed=0, inertia=0, speed_boost=1):
+    def __init__(self, pos, size, color, shape="rectangle", width=4, border=8, speed=0, inertia=0, speed_boost=1, mass=1):
         super().__init__(pos, size, color, shape, width=width, border=border)
         self.speed_boost = speed_boost
         self.speed = speed
+        self.mass = mass
+
         self.velocity = Vector2(0, 0)
         self.inertia = inertia
 
@@ -77,6 +79,6 @@ class TangibleEntity(Entity):
         self.velocity *= self.inertia
         movement = Vector2(dx, dy)
         if movement.length() != 0:
-            self.velocity += movement.normalize() * self.speed
+            self.velocity += movement.normalize() * self.speed / self.mass
 
         self.pos += self.velocity * self.speed_boost

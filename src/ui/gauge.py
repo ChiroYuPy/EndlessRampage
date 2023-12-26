@@ -4,23 +4,25 @@ import pygame
 class Gauge:
     def __init__(self, pos, size, border_color=(255, 255, 255), gauge_color=(127, 127, 127),
                  background_color=(40, 40, 40), back_gauge_color=(79, 79, 79), adapt_value_speed=1,
-                 max_value=1, min_value=0, border=0, width=0, text=False, text_color=(255, 255, 255), text_size=16):
+                 max_value=1, min_value=0, border=0, width=0, text=False, text_color=(255, 255, 255),
+                 text_size=16, default_value=None):
+
         self.pos = (pos[0] - size[0] / 2, pos[1] - size[1] / 2)
         self.size = size
         self.border = border
         self.width = width
+
         self.border_color = border_color
         self.gauge_color = gauge_color
         self.background_color = background_color
         self.back_gauge_color = back_gauge_color
-        self.adapt_value_speed = adapt_value_speed
 
         self.min_value = min_value
         self.max_value = max_value
         self.value = self.max_value
-
-        self.new_value = min_value
-        self.late_value = min_value
+        self.adapt_value_speed = adapt_value_speed
+        self.new_value = default_value if default_value is not None else min_value
+        self.late_value = default_value if default_value is not None else min_value
 
         self.text = text
         self.text_color = text_color
@@ -28,7 +30,7 @@ class Gauge:
 
     def draw(self, screen):
         self.value = max(self.min_value, min(self.value, self.max_value))
-        adapt_value_speed = self.max_value/100
+        adapt_value_speed = self.max_value/100 * self.adapt_value_speed
         if self.new_value < self.value:
             self.new_value += adapt_value_speed
         elif self.new_value > self.value:

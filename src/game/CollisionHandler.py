@@ -33,7 +33,7 @@ class Collision:
 
         for xp_object in self.game.xp_objects:
             if check_collision(self.game.player, xp_object):
-                xp_object.move(self.game.player.velocity.x, self.game.player.velocity.y)
+                xp_object.move(self.game.player.velocity.x/xp_object.mass, self.game.player.velocity.y/xp_object.mass)
                 self.game.player.velocity += Vector2(-self.game.player.velocity.x * 2, -self.game.player.velocity.y * 2)
                 xp_object.hp -= self.game.player.body_damage
                 self.game.player.hp -= round(xp_object.hp/2)
@@ -43,10 +43,10 @@ class Collision:
 
             for projectile in self.game.projectiles:
                 if check_collision(projectile, xp_object):
-                    xp_object.move(xp_object.velocity.x, xp_object.velocity.y)
+                    xp_object.move(xp_object.velocity.x/xp_object.mass, xp_object.velocity.y/xp_object.mass)
                     projectile_velocity = projectile.direction * projectile.speed
-                    xp_object.velocity = Vector2(projectile_velocity.x, projectile_velocity.y)
-                    xp_object.hp -= self.game.player.projectile_damage
+                    xp_object.velocity = Vector2(projectile_velocity.x/xp_object.mass, projectile_velocity.y/xp_object.mass)
+                    xp_object.hp -= self.game.player.projectile_damage*projectile.size/20
                     projectile.alive = False
                     if xp_object.hp <= 0:
                         self.game.settings.update_xp(xp_object.xp_value)

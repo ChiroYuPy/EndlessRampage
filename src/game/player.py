@@ -1,4 +1,5 @@
 # src/game/player.py
+import json
 import math
 
 import pygame
@@ -12,16 +13,24 @@ from ..game.projectile import Projectile
 
 
 class Turret:
-    def __init__(self, player, width, height, offset_x=0, offset_y=0):
-        self.launch_pos = 0
+    def __init__(self, player, width, height, projectile_speed, projectile_reload, tangent_offset=0, distance=0,
+                 angle_offset=0):
+        self.player = player
+
+        self.launch_pos = self.player.pos
         self.last_shot_time = 0
 
-        self.player = player
+        self.projectile_speed = projectile_speed
+        self.projectile_reload = projectile_reload
+
         self.width = width
         self.height = height
-        self.offset_x = offset_x
-        self.offset_y = offset_y
-        self.angle = 0
+
+        self.offset_x = tangent_offset
+        self.offset_y = distance
+
+        self.angle_offset = math.radians(int(angle_offset))
+        self.projectile_size = height
 
     def draw(self, screen, pos, direction):
         if direction:
@@ -37,36 +46,31 @@ class Turret:
         rotated_points = []
 
         for point in [
-            (self.width/2 + self.offset_y, self.height / 2 + self.offset_x),
-            (self.width/2 + self.offset_y, - self.height / 2 + self.offset_x),
-            (- self.width/2 + self.offset_y, - self.height / 2 + self.offset_x),
-            (- self.width/2 + self.offset_y, self.height / 2 + self.offset_x)
+            (self.width / 2 + self.offset_y, self.height / 2 + self.offset_x),
+            (self.width / 2 + self.offset_y, - self.height / 2 + self.offset_x),
+            (- self.width / 2 + self.offset_y, - self.height / 2 + self.offset_x),
+            (- self.width / 2 + self.offset_y, self.height / 2 + self.offset_x)
         ]:
-            rotated_x = math.cos(turret_angle) * point[0] - math.sin(turret_angle) * point[1] + turret_x
-            rotated_y = math.sin(turret_angle) * point[0] + math.cos(turret_angle) * point[1] + turret_y
+            rotated_x = math.cos(turret_angle + self.angle_offset) * point[0] - math.sin(
+                turret_angle + self.angle_offset) * point[1] + turret_x
+            rotated_y = math.sin(turret_angle + self.angle_offset) * point[0] + math.cos(
+                turret_angle + self.angle_offset) * point[1] + turret_y
             rotated_points.append((rotated_x, rotated_y))
 
-
-        center_x = math.cos(turret_angle) * (self.offset_y + self.height/2) - math.sin(turret_angle) * self.offset_x + turret_x
-        center_y = math.sin(turret_angle) * (self.offset_y + self.height/2) + math.cos(turret_angle) * self.offset_x + turret_y
+        center_x = math.cos(turret_angle + self.angle_offset) * (self.offset_y + self.height) - math.sin(
+            turret_angle + self.angle_offset) * self.offset_x + turret_x
+        center_y = math.sin(turret_angle + self.angle_offset) * (self.offset_y + self.height) + math.cos(
+            turret_angle + self.angle_offset) * self.offset_x + turret_y
         self.launch_pos = Vector2(center_x, center_y)
 
         return rotated_points
 
-    def update_rotation(self, pos):
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        player_x, player_y = pos
-
-        turret_x, turret_y = player_x + self.offset_x, player_y + self.offset_y
-        self.angle = math.atan2(mouse_x - turret_y, mouse_x - turret_x)
-
     def fire(self, projectiles):
-        if self.player.direction is not None and self.player.current_time - self.last_shot_time >= 1000 / self.player.reload:
-            projectiles.append(Projectile(self.launch_pos, self.player.direction, self.player.projectile_speed))
-
-            step_back = -self.player.direction
-            self.player.move(*step_back)
-
+        if self.player.angle + self.angle_offset is not None and self.player.current_time - self.last_shot_time >= 1000 / (
+                self.player.reload * self.projectile_reload):
+            projectiles.append(Projectile(self.launch_pos, self.player.angle + self.angle_offset,
+                                          self.player.projectile_speed * self.projectile_speed,
+                                          size=self.projectile_size))
             self.last_shot_time = self.player.current_time
 
 
@@ -74,7 +78,8 @@ class Player(TangibleEntity):
     def __init__(self, pos):
         super().__init__(pos, PLAYER_SIZE, "#1925b6", speed=PLAYER_SPEED, inertia=0.94, shape="circle", width=False)
 
-        self.direction = None
+        self.angle = 0
+        self.direction = Vector2(0, 0)
         self.current_time = 0
         self.last_stamina_regen = 0
         self.last_shot_time = 0
@@ -97,20 +102,31 @@ class Player(TangibleEntity):
         self.hp = self.max_hp
         self.stamina = self.max_stamina
 
-        self.turret1 = Turret(self, 48, 22, offset_x=13, offset_y=24)
-        self.turret2 = Turret(self, 48, 22, offset_x=-13, offset_y=24)
+        with open("src/config/tanks.json", 'r') as json_file:
+            turret_sets = json.load(json_file)
+
+        self.turret_sets = {}
+        for turret_set in turret_sets['turret_sets']:
+            set_name = turret_set['set_name']
+            turrets = [Turret(self, **params) for params in turret_set['turrets'].values()]
+            self.turret_sets[set_name] = turrets
+
+        self.turrets = self.turret_sets.get('double')
 
     def clamp_position(self):
         self.pos.x = max(self.size / 2, min(self.pos.x, MAP_W - self.size / 2))
         self.pos.y = max(self.size / 2, min(self.pos.y, MAP_H - self.size / 2))
 
     def fire(self, projectiles):
-        self.turret1.fire(projectiles)
-        self.turret2.fire(projectiles)
+        for turret in self.turrets:
+            turret.fire(projectiles)
 
     def update(self, mouse_pos):
         super().update()
+
         self.direction = self.get_target_direction(mouse_pos)
+        dx, dy = self.direction
+        self.angle = math.atan2(dy, dx)
 
         self.current_time = pygame.time.get_ticks()
 
@@ -127,15 +143,13 @@ class Player(TangibleEntity):
 
         if (self.current_time - self.last_speed_boost_time >= self.speed_boost_delay
                 and self.stamina < self.max_stamina):
-            self.stamina += 0.01
+            self.stamina += 0.01 * self.max_stamina / PLAYER_MAX_STAMINA
 
         self.move(dx, dy)
-        self.turret1.update_rotation(self.pos)
-        self.turret2.update_rotation(self.pos)
         self.clamp_position()
 
     def draw(self, screen):
-        self.turret1.draw(screen, self.pos, self.direction)
-        self.turret2.draw(screen, self.pos, self.direction)
+        for turret in self.turrets:
+            turret.draw(screen, self.pos, self.direction)
         super().draw(screen)
-        pygame.draw.circle(screen, self.border_color, (self.pos.x, self.pos.y), self.size/2, width=3)
+        pygame.draw.circle(screen, self.border_color, (self.pos.x, self.pos.y), self.size / 2, width=3)

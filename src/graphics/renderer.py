@@ -74,15 +74,6 @@ class Renderer:
                                          enemy.size)
                 pygame.draw.rect(self.map, (255, 255, 255), enemy_rect, 1)
 
-        for projectile in self.game.projectiles:
-            projectile.draw(self.map)
-            self.total_entities_drawn += 1
-
-            if self.game.debug_mode:
-                projectile_rect = pygame.Rect(projectile.pos.x - projectile.size / 2,
-                                              projectile.pos.y - projectile.size / 2, projectile.size, projectile.size)
-                pygame.draw.rect(self.map, (255, 255, 255), projectile_rect, 1)
-
         for xp_object in self.game.xp_objects:
             xp_object.draw(self.map)
             self.total_entities_drawn += 1
@@ -95,6 +86,16 @@ class Renderer:
         self.total_entities_drawn += 2
 
         self.game.core.draw(self.map)
+
+        for projectile in self.game.projectiles:
+            projectile.draw(self.map)
+            self.total_entities_drawn += 1
+
+            if self.game.debug_mode:
+                projectile_rect = pygame.Rect(projectile.pos.x - projectile.size / 2,
+                                              projectile.pos.y - projectile.size / 2, projectile.size, projectile.size)
+                pygame.draw.rect(self.map, (255, 255, 255), projectile_rect, 1)
+
         self.game.player.draw(self.map)
 
         if self.game.debug_mode:

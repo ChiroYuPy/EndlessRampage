@@ -15,6 +15,8 @@ from ..game.CollisionHandler import Collision
 
 class Game:
     def __init__(self):
+        self.delta_time = 0.0
+
         self.fullscreen = False
         self.is_running = True
         self.tick = pygame.time.get_ticks()
@@ -145,8 +147,8 @@ class Game:
                 "level": 0,
                 "color": "#f0d96c"
             },
-            "player_projectile_reload_level": {
-                "name": "Player projectile reload",
+            "player_reload_level": {
+                "name": "Player reload",
                 "level": 0,
                 "color": "#f06c6c"
             },
@@ -172,19 +174,36 @@ class Game:
                                                   command=lambda n=skills[skill]: self.settings.update_skill(n))
             self.game_uis.append(locals()[temp_counter_name])
 
-        self.pause_menu_uis.append(Button((self.window_width * 0.1, self.window_height / 2 - 105, 200, 60),
+        self.pause_menu_uis.append(Button((self.window_width * 0.1, self.window_height / 2 - 300, 200, 60),
                                           hover_color=(115, 115, 115),
-                                          text="Resume",
-                                          font_size=24))
-        self.pause_menu_uis.append(Button((self.window_width * 0.1, self.window_height / 2 - 30, 200, 60),
-                                          hover_color=(115, 115, 115),
-                                          text="Quit",
+                                          text="Simple Tank",
                                           font_size=24,
-                                          command=lambda: self.stop()))
-        self.pause_menu_uis.append(Button((self.window_width * 0.1, self.window_height / 2 + 45, 200, 60),
+                                          border=16,
+                                          command=lambda: self.player.change_tank("simple")))
+        self.pause_menu_uis.append(Button((self.window_width * 0.1, self.window_height / 2 - 220, 200, 60),
                                           hover_color=(115, 115, 115),
-                                          text="Restart",
-                                          font_size=24))
+                                          text="Double Tank",
+                                          font_size=24,
+                                          border=16,
+                                          command=lambda: self.player.change_tank("double")))
+        self.pause_menu_uis.append(Button((self.window_width * 0.1, self.window_height / 2 - 140, 200, 60),
+                                          hover_color=(115, 115, 115),
+                                          text="Triplet Tank",
+                                          font_size=24,
+                                          border=16,
+                                          command=lambda: self.player.change_tank("triplet")))
+        self.pause_menu_uis.append(Button((self.window_width * 0.1, self.window_height / 2 - 60, 200, 60),
+                                          hover_color=(115, 115, 115),
+                                          text="Octo Tank",
+                                          font_size=24,
+                                          border=16,
+                                          command=lambda: self.player.change_tank("octo")))
+        self.pause_menu_uis.append(Button((self.window_width * 0.1, self.window_height / 2 + 20, 200, 60),
+                                          hover_color=(115, 115, 115),
+                                          text="Spread Shot Tank",
+                                          font_size=24,
+                                          border=16,
+                                          command=lambda: self.player.change_tank("spread shot")))
 
         self.mini_map = MiniMap((self.window_width - 110, self.window_height - 110), (200, 200), self)
         self.game_uis.append(self.mini_map)
@@ -252,7 +271,10 @@ class Game:
             self.core_last_regen_time = self.tick
 
     def update(self):
-        self.tick = pygame.time.get_ticks()
+        current_tick = pygame.time.get_ticks()
+        self.delta_time = (current_tick - self.tick) / 1000
+        self.tick = current_tick
+
         self.spawner.spawn(self.tick, self.enemies, self.core)
         self.generator.spawn(self.tick, self.xp_objects)
 

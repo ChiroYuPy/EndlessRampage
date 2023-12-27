@@ -6,7 +6,7 @@ class Cursor:
     def __init__(self, renderer):
         self.renderer = renderer
 
-        self.image = load_image("cursors/crosshair1.png", scale=2, color_key=(40, 120, 80))
+        self.image = load_image("cursors/crosshair1.png", scale=2, color_key=(240, 80, 0), alpha=64)
         self.rect = self.image.get_rect()
 
     def draw(self, screen):

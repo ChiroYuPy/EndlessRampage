@@ -6,8 +6,7 @@ pygame.font.init()
 
 class Button:
 
-    def __init__(self, rect, hover_color=(0, 0, 255), default_color=(73, 73, 73), text="", font_size=24, alpha=255,
-                 border_radius=0, offset_y=0, command=None):
+    def __init__(self, rect, hover_color=(0, 0, 255), default_color=(73, 73, 73), text="", font_size=24, offset_y=0, border=False, command=None):
         self.clicked = False
         self.command = command
         self.rect = pygame.Rect(rect)
@@ -15,12 +14,12 @@ class Button:
         self.default_color = default_color
         self.text = text
         self.font_size = font_size
-        self.alpha = alpha
-        self.border_radius = border_radius
+        self.border = border
         self.offset_y = offset_y
 
         self.font = pygame.font.SysFont("Sans-serif", self.font_size)
-        self.surface = Surface((self.rect.width, self.rect.height))
+        self.surface = Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+        self.surface.convert_alpha()
 
     def draw(self, screen):
         self.is_clicked()
@@ -29,10 +28,8 @@ class Button:
         else:
             color = self.default_color
 
-        self.surface.fill((0, 0, 0))
-        self.surface.set_alpha(self.alpha)
         pygame.draw.rect(self.surface, color, (0, 0, self.rect.width, self.rect.height),
-                         border_radius=self.border_radius)
+                         border_radius=self.border)
         screen.blit(self.surface, self.rect)
 
         self.draw_text(screen)

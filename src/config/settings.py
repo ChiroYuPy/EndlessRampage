@@ -1,5 +1,5 @@
 from ..config.constants import (PLAYER_SPEED, PLAYER_MAX_STAMINA, PLAYER_MAX_HP, CORE_MAX_HP, PLAYER_PROJECTILE_SPEED,
-                                PLAYER_PROJECTILE_RELOAD, PLAYER_PROJECTILE_DAMAGE, PLAYER_BODY_DAMAGE)
+                                PLAYER_RELOAD, PLAYER_PROJECTILE_DAMAGE, PLAYER_BODY_DAMAGE)
 
 
 class Settings:
@@ -22,7 +22,7 @@ class Settings:
         self.game.core.max_hp = CORE_MAX_HP
         self.game.player.projectile_speed = PLAYER_PROJECTILE_SPEED
         self.game.player.projectile_damage = PLAYER_PROJECTILE_DAMAGE
-        self.game.player.projectile_reload = PLAYER_PROJECTILE_RELOAD
+        self.game.player.reload = PLAYER_RELOAD
 
         self.game.player_speed_level = 0
         self.game.player_stamina_level = 0
@@ -31,7 +31,7 @@ class Settings:
         self.game.player_body_damage_level = 0
         self.game.player_projectile_speed_level = 0
         self.game.player_projectile_damage_level = 0
-        self.game.player_projectile_reload_level = 0
+        self.game.player_reload_level = 0
 
     def update_xp(self, value):
         self.xp += value
@@ -82,10 +82,10 @@ class Settings:
                         self.game.player_projectile_speed_level += 1
                     self.game.player.projectile_speed = self.round_skill(PLAYER_PROJECTILE_SPEED, 1.05, self.game.player_projectile_speed_level)
 
-                case "Player projectile reload":
-                    if self.game.player_projectile_reload_level < self.MAX_SKILL_LEVEL:
-                        self.game.player_projectile_reload_level += 1
-                    self.game.player.projectile_reload = self.round_skill(PLAYER_PROJECTILE_RELOAD, 1.5, self.game.player_projectile_reload_level)
+                case "Player reload":
+                    if self.game.player_reload_level < self.MAX_SKILL_LEVEL:
+                        self.game.player_reload_level += 1
+                    self.game.player.reload = self.round_skill(PLAYER_RELOAD, 1.1, self.game.player_reload_level)
 
                 case "Player projectile damage":
                     if self.game.player_projectile_damage_level < self.MAX_SKILL_LEVEL:

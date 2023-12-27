@@ -96,7 +96,8 @@ class Renderer:
                                               projectile.pos.y - projectile.size / 2, projectile.size, projectile.size)
                 pygame.draw.rect(self.map, (255, 255, 255), projectile_rect, 1)
 
-        self.game.player.draw(self.map)
+        if not self.game.pause_menu_active:
+            self.game.player.draw(self.map)
 
         if self.game.debug_mode:
             player_rect = pygame.Rect(self.game.player.pos.x - self.game.player.size / 2,
@@ -167,7 +168,7 @@ class Renderer:
             f'',
             f'----------[ Game ]-----------',
             f'player Projectile Damage {self.game.player.projectile_damage}',
-            f'player Projectile Reload {self.game.player.projectile_reload}',
+            f'player Projectile Reload {self.game.player.reload}',
             f'player Projectile Speed {self.game.player.projectile_speed}',
             f'player Body Damage {self.game.player.body_damage}',
             f'Core Max HP {self.game.core.max_hp}',

@@ -5,7 +5,7 @@ import math
 import pygame
 from pygame import Vector2
 
-from ..config.constants import (MAP_W, MAP_H, PLAYER_SIZE, PLAYER_COLOR, PLAYER_SPEED, PLAYER_PROJECTILE_RELOAD,
+from ..config.constants import (MAP_W, MAP_H, PLAYER_SIZE, PLAYER_SPEED, PLAYER_RELOAD,
                                 PLAYER_PROJECTILE_SPEED, PLAYER_MAX_HP, PLAYER_MAX_STAMINA, PLAYER_PROJECTILE_DAMAGE,
                                 PLAYER_BODY_DAMAGE)
 from ..game.entity import TangibleEntity
@@ -18,7 +18,7 @@ class Turret:
         self.player = player
 
         self.launch_pos = self.player.pos
-        self.last_shot_time = 0
+        self.last_shot_time = -1000
 
         self.projectile_speed = projectile_speed
         self.projectile_reload = projectile_reload
@@ -86,12 +86,10 @@ class Player(TangibleEntity):
         self.last_speed_boost_time = 0
         self.speed_boost = False
 
-        self.border_color = "#141fab"
-
         self.player_stamina_regen = 1000
         self.speed_boost_delay = 2000
 
-        self.reload = PLAYER_PROJECTILE_RELOAD
+        self.reload = PLAYER_RELOAD
         self.projectile_speed = PLAYER_PROJECTILE_SPEED
         self.body_damage = PLAYER_BODY_DAMAGE
         self.projectile_damage = PLAYER_PROJECTILE_DAMAGE
@@ -111,7 +109,14 @@ class Player(TangibleEntity):
             turrets = [Turret(self, **params) for params in turret_set['turrets'].values()]
             self.turret_sets[set_name] = turrets
 
-        self.turrets = self.turret_sets.get('double')
+        self.turrets = self.turret_sets.get('simple')
+        self.tanks_amount = len(turret_sets['turret_sets'])
+        self.tanks_name = []
+        for tank in turret_sets['turret_sets']:
+            self.tanks_name.append(tank['set_name'])
+
+    def change_tank(self, param):
+        self.turrets = self.turret_sets.get(param)
 
     def clamp_position(self):
         self.pos.x = max(self.size / 2, min(self.pos.x, MAP_W - self.size / 2))
@@ -121,11 +126,14 @@ class Player(TangibleEntity):
         for turret in self.turrets:
             turret.fire(projectiles)
 
-    def update(self, mouse_pos):
+    def update(self, mouse_pos=None):
         super().update()
 
-        self.direction = self.get_target_direction(mouse_pos)
-        dx, dy = self.direction
+        if mouse_pos is not None:
+            self.direction = self.get_target_direction(mouse_pos)
+        if self.direction is not None:
+            dx, dy = self.direction
+        else: dx, dy = 0, 0
         self.angle = math.atan2(dy, dx)
 
         self.current_time = pygame.time.get_ticks()
@@ -152,4 +160,3 @@ class Player(TangibleEntity):
         for turret in self.turrets:
             turret.draw(screen, self.pos, self.direction)
         super().draw(screen)
-        pygame.draw.circle(screen, self.border_color, (self.pos.x, self.pos.y), self.size / 2, width=3)

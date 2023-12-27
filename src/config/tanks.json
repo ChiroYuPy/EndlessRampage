@@ -1,0 +1,52 @@
+{"turret_sets": [
+  {
+    "set_name": "simple",
+    "turrets": {
+      "0": {"width": 40, "height": 20, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": 0}
+    }
+  },
+  {
+    "set_name": "double",
+    "turrets": {
+      "0": {"width": 46, "height": 22, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": -14, "distance": 25, "angle_offset": 0},
+      "1": {"width": 46, "height": 22, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 14, "distance": 25, "angle_offset": 0}
+    }
+  },
+  {
+    "set_name": "triplet",
+    "turrets": {
+      "0": {"width": 40, "height": 20, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": -45},
+      "1": {"width": 40, "height": 20, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": 0},
+      "2": {"width": 40, "height": 20, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": 45}
+    }
+  },
+  {
+    "set_name": "octo",
+    "turrets": {
+      "0": {"width": 40, "height": 20, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": 0},
+      "1": {"width": 40, "height": 20, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": 45},
+      "2": {"width": 40, "height": 20, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": 90},
+      "3": {"width": 40, "height": 20, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": 135},
+      "4": {"width": 40, "height": 20, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset":180},
+      "5": {"width": 40, "height": 20, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": 225},
+      "6": {"width": 40, "height": 20, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": 270},
+      "7": {"width": 40, "height": 20, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": 315}
+    }
+  },
+  {
+    "set_name": "spread shot",
+    "turrets": {
+      "0": {"width": 24, "height": 16, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": -75},
+      "1": {"width": 24, "height": 16, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": 75},
+      "2": {"width": 28, "height": 16, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": -60},
+      "3": {"width": 28, "height": 16, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": 60},
+      "4": {"width": 32, "height": 16, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": -45},
+      "5": {"width": 32, "height": 16, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": 45},
+      "6": {"width": 36, "height": 16, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": -30},
+      "7": {"width": 36, "height": 16, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": 30},
+      "8": {"width": 40, "height": 16, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": -15},
+      "9": {"width": 40, "height": 16, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": 15},
+      "10": {"width": 44, "height": 16, "projectile_speed": 6, "projectile_reload": 2, "tangent_offset": 0, "distance": 30, "angle_offset": 0}
+    }
+  }
+]}
